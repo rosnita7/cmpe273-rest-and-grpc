@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package retail;
+
+// The Inventory Service contract
+service InventoryService {
+    // Checks whether the requested item and quantity are available
+    rpc CheckStock (CheckStockRequest) returns (CheckStockResponse);
+}
+
+// Request message for checking stock
+message CheckStockRequest {
+    string item_id = 1;
+    int32 quantity = 2;
+    float delay_seconds = 3; // Simulated server-side delay to demonstrate gRPC deadline handling
+}
+
+// Response message for stock check
+message CheckStockResponse {
+    string item_id = 1;
+    string name = 2;
+    bool available = 3;
+    int32 current_stock = 4;
+    float price = 5;
+    string message = 6;
+}
+
+// The Order Service contract
+service OrderService {
+    // Accepts an order containing an item_id and quantity
+    rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+// Request message for creating an order
+message CreateOrderRequest {
+    string item_id = 1;
+    int32 quantity = 2;
+    float delay_seconds = 3; // Propagated to inventory service to test deadline
+}
+
+// Response message for order creation
+message CreateOrderResponse {
+    string order_id = 1;
+    string item_id = 2;
+    int32 quantity = 3;
+    string status = 4; // e.g., "CONFIRMED", "REJECTED", "DEADLINE_EXCEEDED"
+    float total_price = 5;
+    string message = 6;
+}
